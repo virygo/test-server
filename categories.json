@@ -1,0 +1,341 @@
+{
+  "categories": [
+    {
+      "key": "stay",
+      "name": "🏨 Stay",
+      "flow": "date-first",
+      "subcategories": [],
+      "filters": {
+        "Location": [
+          "📍 City/Area/Neighborhood",
+          "🗺 Map View",
+          "📏 Distance to POIs"
+        ],
+        "Price/Budget": [
+          "💰 Price per Night",
+          "🏷 Deals/Discounts",
+          "💳 Prepay or Pay at Check-in",
+          "💵 Payment Methods"
+        ],
+        "Category/Stars": [
+          "⭐ Hotel Stars (1–7)",
+          "🏡 Property Type (Hotel, Resort, Villa, Hostel, Apartment, B&B, Boutique, All-inclusive, Eco-lodge)"
+        ],
+        "Room/Accommodation Type": [
+          "🛏 Single/Double/Triple/Quad",
+          "🏢 Suite/Deluxe/Executive/Penthouse",
+          "🏠 Villa/Private House",
+          "🏬 Studio/Apartment",
+          "👨‍👩‍👧 Connected/Family Rooms",
+          "♿ Accessible/ADA",
+          "🌅 Views (Sea/Mountain/City/Garden)",
+          "🌿 Balcony/Terrace/Private Pool"
+        ],
+        "Amenities": [
+          "🌐 Wi-Fi",
+          "🏊 Pool (indoor/outdoor/infinity)",
+          "💆 Spa/Wellness",
+          "🏋 Fitness Center",
+          "🏖 Beach Club/Private Beach",
+          "🚗 Parking/Valet",
+          "✈ Airport Shuttle/Transfer",
+          "🕒 24h Reception/Concierge",
+          "🍽 Room Service",
+          "🍷 Restaurant/Bar/Lounge",
+          "🏢 Conference Rooms",
+          "🐶 Pet Friendly",
+          "🧒 Kids Club/Babysitting",
+          "🧺 Laundry",
+          "🧳 Luggage Storage",
+          "🚭 Smoking/Non-smoking",
+          "♿ Wheelchair Accessible"
+        ],
+        "Food & Drink": [
+          "🥐 Breakfast",
+          "🍽 Lunch/Dinner Options",
+          "🍸 Bar/Cocktail Lounge",
+          "🏖 Beach Restaurant",
+          "🥗 Special Diets",
+          "🍽 Board Basis (All/Half/Full)",
+          "🛎 In-room dining/Minibar"
+        ],
+        "Accessibility": [
+          "♿ Wheelchair Accessible",
+          "🛗 Elevator",
+          "📝 Braille Signage",
+          "🔊 Hearing-impaired Services",
+          "🏠 Ground Floor Rooms"
+        ],
+        "Activities": [
+          "🌊 Water sports/Diving",
+          "🏀 Sports facilities",
+          "🧘 Fitness classes/Yoga/Pilates",
+          "💆 Spa/Massage",
+          "🏞 Sightseeing/Tours",
+          "🎶 Nightlife",
+          "👧 Kids Activities",
+          "🏛 Cultural Experiences"
+        ],
+        "Special Features": [
+          "💑 Adults-only/Couples",
+          "🌹 Romantic",
+          "✨ Luxury/Boutique/Design",
+          "🌿 Eco-friendly",
+          "🏢 Business/Conference",
+          "👨‍👩‍👧 Family-friendly",
+          "🕓 Extended stay"
+        ],
+        "Booking/Availability": [
+          "🆓 Flexible Cancellation",
+          "🏨 Pay at Hotel/Prepayment",
+          "⚡ Instant Booking/Request-to-Book",
+          "🛌 Minimum Stay",
+          "⌚ Check-in/out Time"
+        ],
+        "Traveler Helpers": [
+          "🔥 Popularity/Recommended",
+          "📍 Distance from user",
+          "🌀 Virtual tour/360°",
+          "🗣 Languages Spoken",
+          "🏅 Loyalty/Member Discounts",
+          "💼 Special Deals/Packages"
+        ],
+        "Ratings/Reviews": [
+          "⭐ Guest Rating",
+          "🌐 External Ratings (Google/TripAdvisor/Booking)"
+        ]
+      }
+    },
+    {
+      "key": "e_tickets",
+      "name": "✈🛳 E-Tickets / Tickets",
+      "subcategories": ["⛴ Ferries / Boats", "✈ Airplanes / Flights"],
+      "filters": {
+        "Ferries / Boats": [
+          "⛴ Departure Port/Arrival Port",
+          "📅 Date/Time",
+          "⏱ Duration",
+          "💰 Price Range",
+          "⚡ Instant Booking/Request-to-Book",
+          "🆓 Free Cancellation",
+          "🚗 Vehicle Onboard",
+          "🛌 Cabin Type",
+          "💺 Seating Type",
+          "✨ Extras (Meals, Accessibility, Pet Friendly, Wi-Fi)"
+        ],
+        "Airplanes / Flights": [
+          "🛫 Departure/Arrival Airport",
+          "📅 Date/Time",
+          "⏱ Flight Duration",
+          "💰 Price Range",
+          "✈ Airlines",
+          "📲 Instant Booking/E-Ticket",
+          "🆓 Free Cancellation/Refundable",
+          "🛑 Stopovers",
+          "🪑 Class",
+          "✨ Extras (Baggage, Seat Selection, Meals, Accessibility)",
+          "🔁 Flight Type (One-way/Round-trip/Multi-city)"
+        ]
+      }
+    },
+    {
+      "key": "food",
+      "name": "🍽 Food",
+      "subcategories": [
+        "🍣 Sushi and Lounge Cuisine",
+        "🍲 Traditional",
+        "🍷 Gourmet Fine Dining",
+        "🌮 Street Food",
+        "🥦 Vegetarian and Vegan",
+        "🔥 Grill",
+        "🦞 Seafood",
+        "🍔 Fast Food",
+        "📦 Delivery"
+      ],
+      "filters": {
+        "Common": [
+          "📍 Location/Area",
+          "💰 Price Range",
+          "⏰ Opening Hours",
+          "📅 Reservations",
+          "🥡 Takeaway/Delivery",
+          "🥗 Dietary Options",
+          "⭐ Rating/Reviews"
+        ]
+      }
+    },
+    {
+      "key": "nightlife",
+      "name": "🌃 Nightlife",
+      "subcategories": [
+        "💃 Night Club",
+        "🍸 Cocktail Bar",
+        "🌅 Sunset Bar",
+        "🍽 Lunch Bar / Restaurant",
+        "🌙 After Club",
+        "🎶 Live Music"
+      ],
+      "filters": {
+        "Common": [
+          "🎵 Music Style",
+          "👗 Dress Code",
+          "🔞 Age Policy",
+          "🥂 VIP/Table Booking",
+          "🏖 Outdoor/Indoor",
+          "🚬 Smoking Area",
+          "♿ Accessibility"
+        ]
+      }
+    },
+    {
+      "key": "beach_club",
+      "name": "🏖 Beach Club / Beach Bar",
+      "subcategories": ["🛏 Sunbeds", "🌴 Daybeds/Cabanas", "🍾 Tables"],
+      "filters": {
+        "Common": [
+          "🏝 Beach Type",
+          "👨‍👩‍👧 Family Friendly",
+          "🧺 Towels Included",
+          "🌊 Pool/Sea Access",
+          "💶 Minimum Spend",
+          "🍹 Food & Drink Options",
+          "🎧 Music/DJ",
+          "♿ Accessibility"
+        ],
+        "Booking": [
+          "⚡ Instant Booking",
+          "📩 Request-to-Book",
+          "⏰ Time Slot",
+          "👥 Group Size"
+        ]
+      }
+    },
+    {
+      "key": "on_demand_transport",
+      "name": "🚕 On-Demand Transport",
+      "subcategories": [
+        "🚖 Taxi",
+        "🚐 Van",
+        "🚘 Limousine",
+        "🧑‍✈ Private Driver",
+        "🌟 VIP Transfers",
+        "🚌 Shuttle",
+        "⛴ Boat Transfer"
+      ],
+      "filters": {
+        "Common": [
+          "📍 Pickup Location",
+          "🏁 Dropoff Location",
+          "📅 Date/Time",
+          "👥 Passengers",
+          "🧳 Luggage",
+          "👶 Child Seats",
+          "🚗 Vehicle Type",
+          "🗣 Driver Language",
+          "⚡ Instant vs Scheduled",
+          "💳 Payment Method"
+        ]
+      }
+    },
+    {
+      "key": "beauty_wellness_fitness",
+      "name": "💆 Beauty, Wellness & Fitness",
+      "subcategories": [
+        "💇 Hair and Nails",
+        "🧖 Spa and Massage",
+        "💅 Face and Body Treatments",
+        "✨ Aesthetic and Beauty",
+        "🌿 Holistic and Lifestyle",
+        "🏋 Fitness, Personal Training and Martial Arts"
+      ],
+      "filters": {
+        "Common": [
+          "📍 Location",
+          "📅 Date/Time",
+          "⏱ Duration",
+          "💰 Price Range",
+          "⚡ Instant Booking/Request-to-Book",
+          "⭐ Rating/Reviews"
+        ]
+      }
+    },
+    {
+      "key": "rentals",
+      "name": "🚗 Rentals",
+      "subcategories": [
+        "🚙 Cars",
+        "🏍 Motorcycles",
+        "🚜 Buggies",
+        "🏎 ATVs",
+        "⛴ Boats",
+        "🚁 Helicopters",
+        "🚲 Bicycles",
+        "⚡ Electric Bicycles"
+      ],
+      "booking_mode": {
+        "Boats": "request_to_book",
+        "Helicopters": "request_to_book",
+        "default": "instant_or_request"
+      },
+      "filters": {
+        "Common": [
+          "📍 Pickup Location",
+          "📅 Date/Duration",
+          "💰 Price per Hour/Day",
+          "📝 Insurance (Basic/Full)",
+          "🆓 Free Cancellation",
+          "⭐ Rating/Reviews",
+          "💳 Payment Method (Online / On-site / Deposit)"
+        ]
+      }
+    },
+    {
+      "key": "activities",
+      "name": "🏞 Excursions & Outdoor Activities",
+      "subcategories": [
+        "🐴 Horseback Riding / Riding Tours",
+        "🧭 Guided Tours / Sightseeing",
+        "🥾 Hiking / Trekking",
+        "🎿 Mountain & Winter Sports",
+        "🧗 Adventure & Extreme Sports",
+        "🚴 Cycling / Mountain Biking",
+        "🌿 Nature & Wildlife Tours",
+        "🌊 Water Activities (non-beach-club)"
+      ],
+      "filters": {
+        "General": [
+          "📍 Location/Area",
+          "📅 Date/Duration",
+          "💰 Price Range",
+          "⚡ Difficulty",
+          "⚡ Instant Booking/Request-to-Book",
+          "⭐ Rating/Reviews"
+        ]
+      }
+    },
+    {
+      "key": "history_culture",
+      "name": "🏛 History & Culture",
+      "subcategories": [
+        "🖼 Museums & Galleries",
+        "🏺 Archaeological Sites",
+        "🏰 Historical Monuments",
+        "🎭 Cultural Events & Festivals",
+        "🏘 Traditional Villages & Landmarks",
+        "🚶 Walking Tours & Heritage Routes"
+      ],
+      "filters": {
+        "General": [
+          "📍 Location/Area",
+          "📅 Date/Time",
+          "💰 Price Range",
+          "⏱ Duration",
+          "🗣 Languages",
+          "⚡ Instant Booking/Request-to-Book",
+          "⭐ Rating/Reviews",
+          "👨‍👩‍👧 Family Friendly/Accessibility"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+@base = http://localhost:3000
+@VENDOR_JWT = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoidmVuZG9yQHZpcnlnby5jb20iLCJ1c2VybmFtZSI6InZlbmRvcl91c2VyIiwicm9sZSI6IlZFTkRPUiIsImlhdCI6MTc1OTc2MDQzNywiZXhwIjoxNzYwMzY1MjM3fQ.oKscHqHoTbRRKGnDnna2sbS32jvbBXSP64z0QXc3LH0
+@CUSTOMER_JWT = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsImVtYWlsIjoiY3VzdG9tZXJAdmlyeWdvLmNvbSIsInVzZXJuYW1lIjoiY3VzdG9tZXJfdXNlciIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc1OTc2MDMyNSwiZXhwIjoxNzYwMzY1MTI1fQ.MeHAIu9YKMgfaiCg1Qq4b2cFu5YOCEuHZ2zkDniH01w
+@CATEGORY_ID = 11
+
+
+### 1) Δημιουργία ADMIN χρήστη
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "email": "newadmin123@virygo.com",
+  "password": "Admin123!",
+  "username": "new123admin",
+  "name": "New Admin",
+  "role": "ADMIN"
+}
+
+###
+
+### 2) Login ως ADMIN -> πάρε το token από την απόκριση
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "newadmin123@virygo.com",
+  "password": "Admin123!"
+}
+
+
+### Δημιουργία VENDOR USER
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "email": "vendor@virygo.com",
+  "password": "Vendor123!",
+  "username": "vendor_user",
+  "name": "Vendor User",
+  "role": "VENDOR"
+}
+
+### Δημιουργία CUSTOMER USER
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "email": "customer@virygo.com",
+  "password": "Customer123!",
+  "username": "customer_user",
+  "name": "Customer User",
+  "role": "CUSTOMER"
+}
+
+### Login ως VENDOR -> πάρε το token για vendor tests
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "vendor@virygo.com",
+  "password": "Vendor123!"
+}
+
+### Login ως CUSTOMER -> πάρε το token για customer tests
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "customer@virygo.com",
+  "password": "Customer123!"
+}
+
+########################
+# VENDOR: ΑΠΑΓΟΡΕΥΣΗ   #
+########################
+
+### Vendor: UPDATE category -> 403
+PUT {{base}}/api/categories/{{CATEGORY_ID}}
+Authorization: Bearer ### CREATE category ως VENDOR -> 403 (δεν επιτρέπεται)
+POST {{base}}/api/categories
+Authorization: Bearer {{VENDOR_JWT}}
+Content-Type: application/json
+
+{
+  "name": "Vendor Test Category"
+}
+Content-Type: application/json
+
+{ "name": "Vendor Should Not Rename" }
+
+### Vendor: DELETE category -> 403
+DELETE {{base}}/api/categories/{{CATEGORY_ID}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoidmVuZG9yQHZpcnlnby5jb20iLCJ1c2VybmFtZSI6InZlbmRvcl91c2VyIiwicm9sZSI6IlZFTkRPUiIsImlhdCI6MTc1OTc1OTE5MSwiZXhwIjoxNzYwMzYzOTkxfQ.gceSl5INHgfImCfcswif7l2zbP4-KSbq8kiRsXBzBJI
+
+########################
+# CUSTOMER: ΑΠΑΓΟΡΕΥΣΗ #
+########################
+
+### Customer: UPDATE category -> 403
+PUT {{base}}/api/categories/{{CATEGORY_ID}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsImVtYWlsIjoiY3VzdG9tZXJAdmlyeWdvLmNvbSIsInVzZXJuYW1lIjoiY3VzdG9tZXJfdXNlciIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc1OTc1OTYyNiwiZXhwIjoxNzYwMzY0NDI2fQ.gG-e2l5HkgB4lrVAOtstUv2JHhVeUyNkDNf4Daot_wA
+Content-Type: application/json
+
+{ "name": "Customer Should Not Rename" }
+
+### Customer: DELETE category -> 403
+DELETE {{base}}/api/categories/{{CATEGORY_ID}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6I
+
+
+@base = http://localhost:3000
+@ADMIN_JWT = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsImVtYWlsIjoibmV3YWRtaW4xMjNAdmlyeWdvLmNvbSIsInVzZXJuYW1lIjoibmV3MTIzYWRtaW4iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTk3NjAxNDAsImV4cCI6MTc2MDM2NDk0MH0.PHDzDLncKAtD02Wp1yojzmKT5sj6IaTBxf9_tGw-96k
+@VENDOR_JWT = PASTE_VENDOR_TOKEN
+@CUSTOMER_JWT = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsImVtYWlsIjoiY3VzdG9tZXJAdmlyeWdvLmNvbSIsInVzZXJuYW1lIjoiY3VzdG9tZXJfdXNlciIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc1OTc2MDMyNSwiZXhwIjoxNzYwMzY1MTI1fQ.MeHAIu9YKMgfaiCg1Qq4b2cFu5YOCEuHZ2zkDniH01w
+
+########## ADMIN: CREATE ##########
+### Create category (ADMIN) -> 201
+POST {{base}}/api/categories
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsImVtYWlsIjoibmV3YWRtaW4xMjNAdmlyeWdvLmNvbSIsInVzZXJuYW1lIjoibmV3MTIzYWRtaW4iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTk3NjAxNDAsImV4cCI6MTc2MDM2NDk0MH0.PHDzDLncKAtD02Wp1yojzmKT5sj6IaTBxf9_tGw-96k
+Content-Type: application/json
+
+{ "name": "Temp Cat" }
+
+###
+# Πάρε από την απάντηση το "id" (π.χ. 21) και βάλ’ το εδώ:
+@CATEGORY_ID = 11
+
+########## ADMIN: UPDATE/DELETE (πρέπει να περνάνε) ##########
+### Update category (ADMIN) -> 200
+PUT {{base}}/api/categories/{{CATEGORY_ID}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsImVtYWlsIjoibmV3YWRtaW4xMjNAdmlyeWdvLmNvbSIsInVzZXJuYW1lIjoibmV3MTIzYWRtaW4iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTk3NjAxNDAsImV4cCI6MTc2MDM2NDk0MH0.PHDzDLncKAtD02Wp1yojzmKT5sj6IaTBxf9_tGw-96k
+Content-Type: application/json
+
+{ "name": "Temp Cat Renamed" }
+
+### Delete category (ADMIN) -> 204
+DELETE {{base}}/api/categories/{{CATEGORY_ID}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsImVtYWlsIjoibmV3YWRtaW4xMjNAdmlyeWdvLmNvbSIsInVzZXJuYW1lIjoibmV3MTIzYWRtaW4iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTk3NjAxNDAsImV4cCI6MTc2MDM2NDk0MH0.PHDzDLncKAtD02Wp1yojzmKT5sj6IaTBxf9_tGw-96k
+
+########## VENDOR: ΑΠΑΓΟΡΕΥΣΗ ##########
+### Vendor UPDATE -> 403
+PUT {{base}}/api/categories/{{CATEGORY_ID}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoidmVuZG9yQHZpcnlnby5jb20iLCJ1c2VybmFtZSI6InZlbmRvcl91c2VyIiwicm9sZSI6IlZFTkRPUiIsImlhdCI6MTc1OTc2MDQzNywiZXhwIjoxNzYwMzY1MjM3fQ.oKscHqHoTbRRKGnDnna2sbS32jvbBXSP64z0QXc3LH0
+Content-Type: application/json
+
+{ "name": "Vendor Should Not Rename" }
+
+### Vendor DELETE -> 403
+DELETE {{base}}/api/categories/{{CATEGORY_ID}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoidmVuZG9yQHZpcnlnby5jb20iLCJ1c2VybmFtZSI6InZlbmRvcl91c2VyIiwicm9sZSI6IlZFTkRPUiIsImlhdCI6MTc1OTc2MDQzNywiZXhwIjoxNzYwMzY1MjM3fQ.oKscHqHoTbRRKGnDnna2sbS32jvbBXSP64z0QXc3LH0
+
+########## CUSTOMER: ΑΠΑΓΟΡΕΥΣΗ ##########
+### Customer UPDATE -> 403
+PUT {{base}}/api/categories/{{CATEGORY_ID}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsImVtYWlsIjoiY3VzdG9tZXJAdmlyeWdvLmNvbSIsInVzZXJuYW1lIjoiY3VzdG9tZXJfdXNlciIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc1OTc2MDMyNSwiZXhwIjoxNzYwMzY1MTI1fQ.MeHAIu9YKMgfaiCg1Qq4b2cFu5YOCEuHZ2zkDniH01w
+Content-Type: application/json
+
+{ "name": "Customer Should Not Rename" }
+
+### Customer DELETE -> 403
+DELETE {{base}}/api/categories/{{CATEGORY_ID}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsImVtYWlsIjoiY3VzdG9tZXJAdmlyeWdvLmNvbSIsInVzZXJuYW1lIjoiY3VzdG9tZXJfdXNlciIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc1OTc2MDMyNSwiZXhwIjoxNzYwMzY1MTI1fQ.MeHAIu9YKMgfaiCg1Qq4b2cFu5YOCEuHZ2zkDniH01w
+
+########## Smoke: Δημόσια λίστα (πρέπει 200) ##########
+GET {{base}}/api/categories
+Accept: application/json
+
+### CREATE category ως VENDOR -> 403 (δεν επιτρέπεται)
+POST {{base}}/api/categories
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoidmVuZG9yQHZpcnlnby5jb20iLCJ1c2VybmFtZSI6InZlbmRvcl91c2VyIiwicm9sZSI6IlZFTkRPUiIsImlhdCI6MTc1OTc2MDQzNywiZXhwIjoxNzYwMzY1MjM3fQ.oKscHqHoTbRRKGnDnna2sbS32jvbBXSP64z0QXc3LH0
+Content-Type: application/json
+
+{
+  "name": "Vendor Test Category"
+}

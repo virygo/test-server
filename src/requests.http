@@ -1,0 +1,20 @@
+### Έλεγχος /health
+GET http://localhost:3000/health
+
+### Έλεγχος /api/ping
+GET http://localhost:3000/api/ping
+
+### Λίστα χρηστών
+GET http://localhost:3000/api/users
+
+### Λίστα κατηγοριών
+GET http://localhost:3000/api/categories
+
+### Παράδειγμα POST (π.χ. δημιουργία χρήστη)
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "name": "New User",
+  "email": "newuser@example.com"
+}

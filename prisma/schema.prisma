@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  VENDOR
+  ADMIN
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  username  String   @unique
+  password  String? 
+  role      Role     @default(CUSTOMER)
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id            String         @id @default(cuid())
+  slug          String         @unique
+  name          String
+  order         Int            @default(0)
+  subcategories Subcategory[]
+  filters       Filter[]       @relation("CategoryFilters")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subcategory {
+  id          String       @id @default(cuid())
+  slug        String       
+  name        String
+  order       Int          @default(0)
+  categoryId  String
+  category    Category     @relation(fields: [categoryId], references: [id])
+  bookingMode BookingMode  @default(INSTANT)
+  filters     Filter[]     @relation("SubcategoryFilters")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Filter {
+  id            String        @id @default(cuid())
+  key           String
+  label         String
+  type          FilterType
+  options       FilterOption[]
+  categoryId    String?
+  category      Category?     @relation("CategoryFilters", fields: [categoryId], references: [id])
+  subcategoryId String?
+  subcategory   Subcategory?  @relation("SubcategoryFilters", fields: [subcategoryId], references: [id])
+
+  @@unique([key, categoryId, subcategoryId], name: "key_scope")
+}
+
+model FilterOption {
+  id       String @id @default(cuid())
+  value    String
+  label    String
+  order    Int    @default(0)
+  filterId String
+  filter   Filter @relation(fields: [filterId], references: [id])
+
+  @@unique([filterId, value], name: "filterId_value")
+}
+
+enum FilterType {
+  SELECT
+  MULTISELECT
+  BOOLEAN
+  RANGE
+  TEXT
+  DATE
+  TIME
+  DATETIME
+  DATERANGE
+  NUMBER
+}
+
+enum BookingMode {
+  INSTANT
+  REQUEST_TO_BOOK
+}
