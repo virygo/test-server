@@ -5,36 +5,24 @@ import LangSwitcher from './LangSwitcher';
 
 export default function Header() {
   return (
-    <div className="w-full bg-blue-600 text-white">
-      <div className="mx-auto max-w-6xl px-6 h-12 flex items-center justify-between">
-        {/* Αριστερά: τίτλος */}
-        <Link href="/" className="flex items-baseline gap-2">
-          <span className="font-extrabold tracking-tight text-lg">VIRYGO</span>
-          <span className="opacity-90 text-sm">MYKONOS</span>
+    <header className="w-full bg-[#0a66ff] text-white">
+      <div className="mx-auto max-w-6xl px-3 h-12 flex items-center justify-between">
+        {/* Left: logo */}
+        <Link href="/" className="font-semibold tracking-wide">
+          VIRYGO <span className="opacity-80">MYKONOS</span>
         </Link>
 
-        {/* Μέση: γλώσσες */}
-        <div className="hidden md:block">
+        {/* Right: language BEFORE auth */}
+        <div className="flex items-center gap-3">
           <LangSwitcher />
-        </div>
-
-        {/* Δεξιά: Login / Sign up */}
-        <div className="flex items-center gap-2">
-          <Link
-            href="/login"
-            className="h-8 px-3 rounded-md bg-white/10 hover:bg-white/20 transition text-sm flex items-center"
-          >
+          <Link href="/login" className="hover:underline">
             Login
           </Link>
-
-          <Link
-            href="/signup"
-            className="h-8 px-3 rounded-md bg-white text-blue-700 hover:bg-blue-50 transition text-sm flex items-center"
-          >
+          <Link href="/signup" className="hover:underline">
             Sign up
           </Link>
         </div>
       </div>
-    </div>
+    </header>
   );
 }

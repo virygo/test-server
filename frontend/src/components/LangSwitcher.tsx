@@ -29,7 +29,7 @@ export default function LangSwitcher() {
     <select
       value={locale}
       onChange={onChange}
-      className="h-9 rounded-md border border-white/40 bg-white/10 px-2 text-white text-sm backdrop-blur hover:bg-white/20"
+      className="h-9 rounded-md bg-white/10 px-2 text-white text-sm border border-white/40 hover:bg-white/20 transition"
       aria-label="Language"
       title="Language"
     >
