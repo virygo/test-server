@@ -12,6 +12,7 @@ const categoriesRoutes = require('./routes/categories');
 const authRoutes = require('./routes/auth');
 const filtersRoutes = require('./routes/filters');
 const businessesRoutes = require('./routes/businesses'); // <-- το νέο route
+const regionsRoutes = require('./routes/regions');
 
 const app = express();
 app.use(express.json());
@@ -24,9 +25,11 @@ app.get('/api/ping', (_req, res) => res.json({ pong: true }));
 // mount routers
 app.use('/api/users', usersRoutes);
 app.use('/api/categories', categoriesRoutes);
+app.use('/api/category', categoriesRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/filters', filtersRoutes);
 app.use('/api/businesses', businessesRoutes); // <-- σημαντικό
+app.use('/api/regions', regionsRoutes);
 
 // 404 logger
 app.use((req, res) => {

@@ -123,6 +123,17 @@ enum SlotStatus {
   AVAILABLE
   BLOCKED
 }
+// ==== PROVIDER ENUMS (NEW) ====
+enum ProviderMode {
+  OWN
+  PARTNER
+  HYBRID
+}
+
+enum ListingSource {
+  OWN
+  EXPEDIA
+}
 
 /// ------- VENDOR PROFILE -------
 /// 1-1 με User όταν ο ρόλος είναι VENDOR
@@ -136,6 +147,29 @@ model VendorProfile {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+/// ------- REGION (NEW) -------
+model Region {
+  id               String       @id @default(cuid())
+  slug             String       @unique
+  name             String
+  imageUrl         String?
+  description      String?
+  isActive         Boolean      @default(true)
+  orderIndex       Int          @default(0)
+
+  // Provider-agnostic
+  providerMode     ProviderMode @default(OWN)
+  provider         String?
+  providerRegionId String?
+  featureConfig    Json?
+
+  // Relations
+  businesses                Business[]
+  inventorySourcePriorities InventorySourcePriority[]
+  providerAttributions      ProviderAttribution[]
+
+  @@index([providerMode, slug])
+}
 
 /// ------- BUSINESS (π.χ. Hotel/Bar/Spa κλπ) -------
 model Business {
@@ -146,11 +180,27 @@ model Business {
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
 
+  // Region scope (NEW)
+  regionId String?
+  region   Region? @relation(fields: [regionId], references: [id])
+
   // many-to-many με Subcategory μέσω join table
   subcategories BusinessSubcategory[]
 
   name        String
   slug        String  @unique
+
+  // === Provider mapping (NEW) ===
+  listingSource ListingSource @default(OWN)
+  provider      String?
+  externalId    String?
+  externalSlug  String?
+  syncPolicy    String?
+  editedByHuman Boolean       @default(false)
+
+  // Manual content overrides
+  contentOverrides ContentOverride[]
+
   description String?
   email       String?
   phone       String?
@@ -177,6 +227,8 @@ model Business {
 
   @@index([ownerId])
   @@index([categoryId])
+  @@index([regionId])
+  @@index([listingSource, provider])
 }
 
 /// ------- MEDIA για κάρτες/φωτογραφίες -------
@@ -305,4 +357,38 @@ model BusinessSubcategory {
 
   @@id([businessId, subcategoryId])
   @@index([subcategoryId])
+}
+/// ------- CONTENT OVERRIDES (NEW) -------
+model ContentOverride {
+  id            String   @id @default(cuid())
+  businessId    String
+  business      Business @relation(fields: [businessId], references: [id])
+  field         String   // π.χ. "title", "description", "images"
+  value         Json
+  editedByHuman Boolean  @default(true)
+
+  @@unique([businessId, field])
+}
+
+/// ------- INVENTORY SOURCE PRIORITY (NEW) -------
+model InventorySourcePriority {
+  id       String        @id @default(cuid())
+  regionId String
+  region   Region        @relation(fields: [regionId], references: [id])
+  source   ListingSource
+  priority Int           // 1 = υψηλότερη
+
+  @@unique([regionId, source])
+  @@index([regionId, priority])
+}
+
+/// ------- PROVIDER ATTRIBUTION (NEW) -------
+model ProviderAttribution {
+  id        String   @id @default(cuid())
+  regionId  String
+  region    Region   @relation(fields: [regionId], references: [id])
+  provider  String   // π.χ. "expedia"
+  label     String?
+  logoUrl   String?
+  legalText String?
 }

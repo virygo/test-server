@@ -19,8 +19,90 @@ const normalize = (s) =>
 const toSlug = (s) => normalize(s).replace(/\s+/g, '_'); // π.χ. "sunset bar" -> "sunset_bar"
 
 const prisma = new PrismaClient();
+// === [NEW] Regions seed ===
+async function seedRegionsAndLinkBusinesses() {
+  console.log('🌱 Seeding Regions (upsert)…');
+
+  const regions = [
+    {
+      slug: 'mykonos',
+      name: 'Mykonos',
+      providerMode: 'OWN',
+      provider: null,
+      providerRegionId: null,
+      featureConfig: {
+        partiesTab: true,
+        ownInventoryBadges: true,
+        providerBadges: false,
+      },
+    },
+    {
+      slug: 'santorini',
+      name: 'Santorini',
+      providerMode: 'OWN',
+      provider: null,
+      providerRegionId: null,
+      featureConfig: {
+        partiesTab: true,
+        ownInventoryBadges: true,
+        providerBadges: false,
+      },
+    },
+    {
+      slug: 'phuket',
+      name: 'Phuket',
+      providerMode: 'PARTNER',
+      provider: 'expedia',
+      providerRegionId: 'phuket-expedia',
+      featureConfig: {
+        partiesTab: false,
+        ownInventoryBadges: false,
+        providerBadges: true,
+      },
+    },
+  ];
+
+  // Upsert (ΔΕΝ σβήνουμε regions — απλώς τα ενημερώνουμε αν υπάρχουν)
+  for (const r of regions) {
+    await prisma.region.upsert({
+      where: { slug: r.slug },
+      create: {
+        slug: r.slug,
+        name: r.name,
+        providerMode: r.providerMode,
+        provider: r.provider,
+        providerRegionId: r.providerRegionId,
+        featureConfig: r.featureConfig,
+      },
+      update: {
+        name: r.name,
+        providerMode: r.providerMode,
+        provider: r.provider,
+        providerRegionId: r.providerRegionId,
+        featureConfig: r.featureConfig,
+      },
+    });
+    console.log(`✔ upsert region: ${r.slug}`);
+  }
+
+  // Πάρε το id της Μυκόνου
+  const mykonos = await prisma.region.findUnique({
+    where: { slug: 'mykonos' },
+  });
+  if (!mykonos) throw new Error('Mykonos region not found after upsert.');
+
+  console.log('🔗 Linking OWN businesses with null regionId to Mykonos…');
+  const updateResult = await prisma.business.updateMany({
+    where: { regionId: null, listingSource: 'OWN' },
+    data: { regionId: mykonos.id },
+  });
+  console.log(`✔ linked ${updateResult.count} business(es) to Mykonos`);
+}
 
 async function main() {
+  // [NEW] seed των περιοχών πριν από τις κατηγορίες
+  await seedRegionsAndLinkBusinesses();
+
   // ---- 1) Διαβάζουμε το JSON από το ROOT ----
   const dataPath = path.join(__dirname, '../categories.json'); // <-- root
   const file = fs.readFileSync(dataPath, 'utf-8');
@@ -29,6 +111,9 @@ async function main() {
 
   // ---- 2) Καθαρίζουμε dev data για να ξανασπείρουμε από μηδέν ----
   // (για dev περιβάλλον — αν ΔΕΝ θες delete, πες μου να το κάνουμε με upsert)
+  await prisma.service.deleteMany(); // ✅ σβήνουμε πρώτα τα services
+  await prisma.businessSubcategory.deleteMany();
+  await prisma.business.deleteMany();
   await prisma.filterOption.deleteMany();
   await prisma.filter.deleteMany();
   await prisma.subcategory.deleteMany();

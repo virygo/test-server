@@ -162,5 +162,70 @@ router.delete(
     }
   })
 );
+// GET /api/categories/:slug  -> μία κατηγορία με subcats + filters
+router.get(
+  '/:slug',
+  asyncHandler(async (req, res) => {
+    const { slug } = req.params;
+
+    const category = await prisma.category.findFirst({
+      where: { slug }, // π.χ. "stay" ή "beauty-wellness-fitness"
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
+
+        // ---- Category-level filters ----
+        filters: {
+          orderBy: { key: 'asc' },
+          select: {
+            id: true,
+            key: true,
+            label: true,
+            type: true,
+            options: {
+              orderBy: { label: 'asc' },
+              select: { id: true, label: true, value: true },
+            },
+          },
+        },
+
+        // ---- Subcategories ----
+        subcategories: {
+          orderBy: { order: 'asc' },
+          select: {
+            id: true,
+            slug: true,
+            name: true,
+            order: true,
+            bookingMode: true,
+            createdAt: true,
+            updatedAt: true,
+
+            // ---- Subcategory-level filters ----
+            filters: {
+              orderBy: { key: 'asc' },
+              select: {
+                id: true,
+                key: true,
+                label: true,
+                type: true,
+                options: {
+                  orderBy: { label: 'asc' },
+                  select: { id: true, label: true, value: true },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!category) return res.status(404).json({ error: 'not_found' });
+    res.json(category);
+  })
+);
 
 module.exports = router;

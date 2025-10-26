@@ -1,11 +1,15 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useParams } from 'next/navigation';
 import BusinessCard from '../../../components/BusinessCard';
-import DateTimeBar, {
-  type DateTimeValue,
-} from '../../../components/DateTimeBar';
+import { verticalFromSlug } from '../../../lib/vertical';
 
 type Business = {
   id: string | number;
@@ -25,7 +29,7 @@ function getCookie(name: string) {
   const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
   return m ? decodeURIComponent(m[1]) : '';
 }
-const getLocale = (): Locale => (getCookie('locale') === 'el' ? 'el' : 'en');
+const getLocale = (): Locale => 'en';
 
 const T = {
   en: {
@@ -80,9 +84,10 @@ const PAGE_SIZE = 20;
 
 export default function CategoryPage() {
   const { slug } = useParams() as { slug: string };
+  const v = verticalFromSlug(slug);
+
   const [locale, setLocale] = useState<Locale>('en');
 
-  const [dt, setDt] = useState<DateTimeValue>({ date: null, time: null });
   const [showSubcats, setShowSubcats] = useState(false);
   const [selectedSub, setSelectedSub] = useState<string | null>(null);
 
@@ -90,7 +95,7 @@ export default function CategoryPage() {
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const sentinelRef = React.useRef<HTMLDivElement | null>(null);
 
   useEffect(() => setLocale(getLocale()), []);
 
@@ -100,102 +105,117 @@ export default function CategoryPage() {
     [slug]
   );
 
-  /* ----- Φτιάχνουμε query string για /api/businesses/search ----- */
+  /* ---------------- Query string (σερβίρει τα params) ---------------- */
   const queryStr = useMemo(() => {
     const p = new URLSearchParams();
     p.set('category', slug);
     p.set('limit', String(PAGE_SIZE));
     if (selectedSub) p.set('subs', selectedSub);
-    if (dt.date) p.set('date', dt.date);
-    if (dt.time) p.set('time', dt.time);
     if (nextCursor) p.set('cursor', nextCursor);
     return p.toString();
-  }, [slug, selectedSub, dt, nextCursor]);
+    // ΜΗΝ βάλεις dangling κόμμα/αγκύλη εδώ
+  }, [slug, selectedSub, nextCursor]);
 
   /* ---------------- Fetch (paging) ---------------- */
   const fetchPage = useCallback(
     async (reset = false) => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/businesses/search?${queryStr}`);
-        if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
-        const json = await res.json();
-        setItems((prev) => (reset ? json.items : [...prev, ...json.items]));
-        setNextCursor(json.nextCursor ?? null);
+
+        // χτίζουμε URL με τα τρέχοντα query params
+        const base = new URL(`/api/category/${slug}`, window.location.origin);
+        const qs = new URLSearchParams(queryStr);
+
+        // όταν δεν είναι reset, κρατάμε τυχόν nextCursor
+        if (!reset && nextCursor) qs.set('cursor', nextCursor);
+
+        base.search = qs.toString();
+
+        const res = await fetch(base.toString());
+        const data = await res.json().catch(() => ({}));
+
+        const incoming: Business[] = Array.isArray(data?.items)
+          ? data.items
+          : [];
+        setItems((prev) => (reset ? incoming : [...prev, ...incoming]));
+        setNextCursor(data?.nextCursor ?? null);
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
       }
     },
-    [queryStr]
+    [slug, queryStr, nextCursor]
   );
 
-  /* -- refetch όταν αλλάζει κάτι (ημερομηνία/ώρα/υποκατηγορία/slug) -- */
+  /* -- refetch όταν αλλάξει κάτι (ημ/νία/ώρα/υποκατηγορία/slug) -- */
   useEffect(() => {
     setNextCursor(null);
     setItems([]);
     fetchPage(true);
-  }, [slug, dt, selectedSub, fetchPage]);
+  }, [fetchPage]);
 
   /* ---------------- Infinite scroll ---------------- */
   useEffect(() => {
-    if (!sentinelRef.current) return;
-    const io = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && !loading && nextCursor) {
-        fetchPage(false);
-      }
-    });
-    io.observe(sentinelRef.current);
+    const el = sentinelRef.current;
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loading && nextCursor) {
+          fetchPage(false);
+        }
+      },
+      { rootMargin: '600px 0px' }
+    );
+
+    io.observe(el);
     return () => io.disconnect();
-  }, [nextCursor, loading, fetchPage]);
+  }, [loading, nextCursor, fetchPage]);
 
   /* --------------- Handlers --------------- */
   function handleSubcategorySelect(scSlug: string) {
     setShowSubcats(false);
     setSelectedSub(scSlug);
   }
-
-  /* ------------------- Render ------------------- */
+  // 🟢 ΕΔΩ ΒΑΖΕΙΣ ΑΥΤΟ:
   const t = T[locale];
 
+  /* ---------------- Render ---------------- */
   return (
-    <div>
-      {/* 1) Date & Time */}
-      <div style={{ padding: 12 }}>
-        <DateTimeBar value={dt} onChange={setDt} />
-      </div>
-
-      {/* 2) Κουμπιά Subcategories / Filters */}
+    <>
+      {/* 2) Buttons row */}
       <div style={{ display: 'flex', gap: 8, padding: '0 12px 12px' }}>
-        <button
-          onClick={() => setShowSubcats(true)}
-          className="rounded-md border px-4 py-2 font-medium"
-          aria-haspopup="dialog"
-          aria-expanded={showSubcats}
-        >
-          {t.subcats}
-          {selectedSub
-            ? `: ${subcats.find((s) => s.slug === selectedSub)?.name ?? ''}`
-            : ''}
-        </button>
+        {/* Μην δείχνεις Subcategories στο STAY */}
+        {v !== 'stays' && (
+          <button
+            onClick={() => setShowSubcats(true)}
+            className="rounded-md border px-4 py-2 font-medium"
+            aria-haspopup="dialog"
+            aria-expanded={showSubcats}
+          >
+            {t.subcats}
+            {selectedSub
+              ? ` : ${subcats.find((s) => s.slug === selectedSub)?.name ?? ''}`
+              : ''}
+          </button>
+        )}
 
+        {/* Κουμπί Filters (ανοίγει modal/placeholder) */}
         <button
-          onClick={() => alert('Filters coming soon')}
-          className="rounded-md border px-4 py-2 font-medium"
-          aria-haspopup="dialog"
-        >
-          {t.filters}
-        </button>
+        //type="button"
+        //onClick={() => alert('Filters coming soon')}
+        //className="rounded-md border px-4 py-2 font-medium"
+        ></button>
       </div>
 
-      {/* Panel Υποκατηγοριών */}
-      {showSubcats && (
+      {/* 3) Panel Υποκατηγοριών (δεν εμφανίζεται στο STAY) */}
+      {v !== 'stays' && showSubcats && (
         <div className="absolute top-20 left-0 right-0 mx-auto w-[90%] max-w-md bg-white shadow-lg rounded-lg p-4">
           <div className="flex justify-between items-center mb-2">
             <h3 className="font-semibold">{t.pickSubcat}</h3>
             <button onClick={() => setShowSubcats(false)} className="text-sm">
-              {t.close} ✕
+              {t.close}
             </button>
           </div>
 
@@ -210,7 +230,8 @@ export default function CategoryPage() {
                 </button>
               </li>
             ))}
-            {/* “Καμία υποκατηγορία” */}
+
+            {/* "Καμία υποκατηγορία" */}
             <li>
               <button
                 className="w-full text-left hover:bg-gray-100 px-3 py-2 rounded-md"
@@ -223,12 +244,12 @@ export default function CategoryPage() {
         </div>
       )}
 
-      {/* Τίτλος */}
+      {/* 4) Τίτλος */}
       <h1 className="text-xl md:text-2xl font-bold mb-4 px-3">
         {t.heading(slug)}
       </h1>
 
-      {/* 3) Λίστα επιχειρήσεων */}
+      {/* 5) Λίστα επιχειρήσεων */}
       <main style={{ padding: 12 }}>
         <div
           style={{
@@ -237,18 +258,17 @@ export default function CategoryPage() {
             gap: 16,
           }}
         >
-          {items.length === 0 && !loading && (
+          {(items?.length ?? 0) === 0 && !loading && (
             <p style={{ padding: 16, textAlign: 'center', color: '#666' }}>
               {t.noItems}
             </p>
           )}
 
-          {items.length > 0 &&
-            items.map((b) => (
-              <article key={b.id}>
-                <BusinessCard b={b} />
-              </article>
-            ))}
+          {(items ?? []).map((b) => (
+            <article key={b.id}>
+              <BusinessCard b={b} />
+            </article>
+          ))}
         </div>
 
         {/* Loading indicator */}
@@ -259,6 +279,6 @@ export default function CategoryPage() {
         {/* Sentinel για infinite scroll */}
         <div ref={sentinelRef} style={{ height: 1 }} />
       </main>
-    </div>
+    </>
   );
 }

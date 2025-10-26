@@ -82,5 +82,58 @@ router.get('/search', async (req, res, next) => {
     // ή next(err) αν προτιμάς το global error handler
   }
 });
+// ✅ GET /api/category/:slug  (frontend compatibility)
+router.get('/:slug', async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+    const { cursor, limit = 20, subs } = req.query;
+
+    const take = Math.min(parseInt(limit, 10), 50) || 20;
+
+    const where = {
+      category: { slug },
+      ...(subs
+        ? { subcategories: { some: { slug: { in: subs.split(',') } } } }
+        : {}),
+    };
+
+    const items = await prisma.business.findMany({
+      where,
+      take,
+      ...(cursor ? { skip: 1, cursor: { id: Number(cursor) } } : {}),
+      orderBy: { id: 'asc' },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        rating: true,
+        priceFrom: true,
+        media: {
+          take: 1,
+          where: { kind: 'COVER' },
+          select: { url: true },
+        },
+      },
+    });
+
+    const nextCursor =
+      items.length === take ? items[items.length - 1].id : null;
+
+    res.json({
+      items: items.map((b) => ({
+        id: b.id,
+        name: b.name,
+        slug: b.slug,
+        rating: b.rating,
+        priceFrom: b.priceFrom,
+        coverUrl: b.media?.[0]?.url ?? null,
+      })),
+      nextCursor,
+    });
+  } catch (err) {
+    console.error('[GET /api/category/:slug] ERROR:', err);
+    next(err);
+  }
+});
 
 module.exports = router;

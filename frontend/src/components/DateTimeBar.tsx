@@ -24,14 +24,14 @@ export default function DateTimeBar({
         zIndex: 5,
       }}
     >
-      <label style={{ fontWeight: 600 }}>Ημερομηνία</label>
+      <label style={{ fontWeight: 600 }}>Date</label>
       <input
         type="date"
         value={value.date ?? ''}
         onChange={(e) => onChange({ ...value, date: e.target.value || null })}
         style={{ padding: 8, border: '1px solid #ddd', borderRadius: 6 }}
       />
-      <label style={{ fontWeight: 600 }}>Ώρα</label>
+      <label style={{ fontWeight: 600 }}>Time</label>
       <input
         type="time"
         value={value.time ?? ''}
