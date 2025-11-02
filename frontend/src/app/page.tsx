@@ -171,7 +171,19 @@ export default function Home() {
         {/* Grid κατηγοριών */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-5 place-items-center mt-6">
           {categories.map((c) => {
-            const href = c.slug ? `/category/${c.slug}` : '#';
+            // 🔹 Παίρνουμε το region από cookie (ή default 'mykonos')
+            const region =
+              typeof document !== 'undefined'
+                ? document.cookie.match(/(?:^|; )region=([^;]+)/)?.[1] ||
+                  'mykonos'
+                : 'mykonos';
+
+            // 🔹 Για όμορφο URL: underscores (DB) → hyphens (URL)
+            const slugPath = (c.slug ?? '').replace(/_/g, '-');
+
+            // 🔹 Τελικό URL με region
+            const href = c.slug ? `/${region}/category/${slugPath}` : '#';
+
             return (
               <Link
                 key={c.key}
